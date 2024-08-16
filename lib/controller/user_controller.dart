@@ -5,7 +5,7 @@ class UserController extends GetxController {
   var users = <User>[].obs;
   var isLoading = true.obs;
   var hasMore = true.obs;
-  var currentPage = 1;
+  var currenatpage = 1;
   final ApiService apiService = ApiService();
 
   @override
@@ -14,18 +14,11 @@ class UserController extends GetxController {
     super.onInit();
   }
 
-  Future<void> fetchUsers() async {
-    if (isLoading.value || !hasMore.value) return;
-
-    isLoading(true);
+  void fetchUsers() async {
     try {
-      var fetchedUsers = await apiService.fetchUsers(page: currentPage);
-      if (fetchedUsers.isEmpty) {
-        hasMore(false); // No more data to fetch
-      } else {
-        users.addAll(fetchedUsers);
-        currentPage++;
-      }
+      isLoading(true);
+      var fetchedUsers = await apiService.fetchUsers();
+      users.assignAll(fetchedUsers);
     } catch (e) {
       print(e);
     } finally {

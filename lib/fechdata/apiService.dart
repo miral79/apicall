@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   final String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-  Future<List<User>> fetchUsers({int page = 1}) async {
+  Future<List<User>> fetchUsers() async {
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
