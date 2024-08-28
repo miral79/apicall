@@ -2,39 +2,36 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+  final String baseUrl =
+      'https://linkedin-data-api.p.rapidapi.com/search-people-by-url';
 
-  Future<List<User>> fetchUsers() async {
-    final response = await http.get(Uri.parse(baseUrl));
+  Future<dynamic> searchPeopleByUrl(String url) async {
+    final headers = {
+      'x-rapidapi-key': '771d00d952msh5db964d406dfbdap18c781jsn8956988a60b8',
+      'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com',
+      'Content-Type': 'application/json',
+    };
+
+    final parameters = {
+      'url': url,
+    };
+
+    final body = jsonEncode(parameters);
+
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: headers,
+      body: body,
+    );
+
+    print("response === == $response");
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      print("Api call is suucced");
-      return jsonResponse.map((data) => User.fromJson(data)).toList();
+      print('API call succeeded');
+      return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to load users');
+      print('Request failed with status: ${response.statusCode}');
+      throw Exception('Failed to search people by URL');
     }
-  }
-}
-
-class User {
-  final int userid;
-  final int id;
-  final String title;
-  final String body;
-
-  User(
-      {required this.userid,
-      required this.id,
-      required this.title,
-      required this.body});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      userid: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
   }
 }
